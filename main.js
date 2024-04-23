@@ -24,35 +24,37 @@ function main() {
 
 	}
 
-	const boxWidth = 1;
-	const boxHeight = 1;
-	const boxDepth = 1;
-	const geometry = new THREE.BoxGeometry( boxWidth, boxHeight, boxDepth );
+	const boxDimensions = [1, 1, 1];
+    const sphereDimensions = [1, 32, 16];
+	const cube_geometry = new THREE.BoxGeometry( boxDimensions[0], boxDimensions[1], boxDimensions[2] );
+    const ball_geometry = new THREE.SphereGeometry( sphereDimensions[0], sphereDimensions[1], sphereDimensions[2]);
 
-	function makeInstance( geometry, color, x ) {
+	function makeInstance( geometry, color, x, y, z) {
 
 		const material = new THREE.MeshPhongMaterial( { color } );
 
-		const cube = new THREE.Mesh( geometry, material );
-		scene.add( cube );
+		const shape = new THREE.Mesh( geometry, material );
+		scene.add( shape );
 
-		cube.position.x = x;
+		shape.position.x = x;
+        shape.position.y = y;
+        shape.position.z = z;
 
-		return cube;
+		return shape;
 
 	}
 
-	const cubes = [
-		makeInstance( geometry, 0x44aa88, 0 ),
-		makeInstance( geometry, 0x8844aa, - 2 ),
-		makeInstance( geometry, 0xaa8844, 2 ),
+	const shapes = [
+		makeInstance( cube_geometry, 0x44aa88, 0, 0, 0),
+		makeInstance( sphere_geometry, 0x730811, - 2, 0, 0),
+		makeInstance( sphere_geometry, 0x184496, 2, 0, 0),
 	];
 
 	function render( time ) {
 
 		time *= 0.001; // convert time to seconds
 
-		cubes.forEach( ( cube, ndx ) => {
+		shapes.forEach( ( cube, ndx ) => {
 
 			const speed = 1 + ndx * .1;
 			const rot = time * speed;
