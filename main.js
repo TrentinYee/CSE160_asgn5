@@ -50,7 +50,7 @@ function main() {
 
     // texture stuff
     const loader = new THREE.TextureLoader();
-    const texture = loader.load( 'fox.png' );
+    const texture = loader.load( 'textures/fox.png' );
     texture.colorSpace = THREE.SRGBColorSpace;
 
     // foxbox
@@ -66,12 +66,12 @@ function main() {
 
     // chimkin
     const mtlLoader = new MTLLoader();
-    mtlLoader.load( 'Bird_v1_L2/Bird_v1/12259_Bird_v1_L2.mtl', ( mtl ) => {
+    mtlLoader.load( 'Models/Bird_v1_L2/Bird_v1/12259_Bird_v1_L2.mtl', ( mtl ) => {
 
         mtl.preload();
         const objLoader = new OBJLoader();
         objLoader.setMaterials( mtl );
-        objLoader.load( 'Bird_v1_L2/Bird_v1/12259_Bird_v1_L2.obj', ( root ) => {
+        objLoader.load( 'Models/Bird_v1_L2/Bird_v1/12259_Bird_v1_L2.obj', ( root ) => {
 
             scene.add( root );
             root.scale.set(0.5, 0.5, 0.5);
