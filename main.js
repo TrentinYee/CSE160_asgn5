@@ -103,8 +103,10 @@ function main() {
     // primary shape dimensions and geometry
 	const boxDimensions = [10, 10, 10];
     const sphereDimensions = [10, 32, 32];
+    const cylinderDimensions = [10, 10, 20];
 	const boxGeometry = new THREE.BoxGeometry( boxDimensions[0], boxDimensions[1], boxDimensions[2] );
     const ballGeometry = new THREE.SphereGeometry( sphereDimensions[0], sphereDimensions[1], sphereDimensions[2]);
+    const cylinderGeometry = new THREE.CylinderGeometry( cylinderDimensions[0], cylinderDimensions[1], cylinderDimensions[2]);
     const roadsize = 50;
     
     // texture defining
@@ -151,6 +153,22 @@ function main() {
     road.position.z = -50;
     road.scale.set(roadsize, 0.5, roadsize);
 
+    // drive in
+    const drivein = new THREE.Mesh(boxGeometry, materials[1]);
+    scene.add(drivein);
+    drivein.position.x = -125;
+    drivein.position.y = -5;
+    drivein.position.z = 300;
+    drivein.scale.set(roadsize/4, 0.5, roadsize/2);
+
+    // high way
+    const highway = new THREE.Mesh(boxGeometry, materials[1]);
+    scene.add(highway);
+    highway.position.x = 0;
+    highway.position.y = -5;
+    highway.position.z = 600;
+    highway.scale.set(1000, 0.5, roadsize);
+
     // other shapes ---------------------------------
     
     // floor
@@ -182,33 +200,46 @@ function main() {
 
     // Eleven Seven --------------------------------
 
-    makeInstance(boxGeometry, 0xAAAAAA, [0, 30, -260], [25, 7.5, 1]); // back wall
-    makeInstance(boxGeometry, 0xAAAAAA, [120, 30, -180], [1, 7.5, 15]); // right wall
-    makeInstance(boxGeometry, 0xAAAAAA, [-120, 30, -180], [1, 7.5, 15]); // left wall
-    makeInstance(boxGeometry, 0x2b2218, [0, 82, -180], [30, 3,20]); // roof
+    makeInstance(boxGeometry, 0xAAAAAA, [0, 35, -260], [25, 7.5, 1]); // back wall
+    makeInstance(boxGeometry, 0xAAAAAA, [120, 35, -180], [1, 7.5, 15]); // right wall
+    makeInstance(boxGeometry, 0xAAAAAA, [-120, 35, -180], [1, 7.5, 15]); // left wall
+    makeInstance(boxGeometry, 0x2b2218, [0, 87, -180], [30, 3,20]); // roof
 
     // signage
-    makeInstance(boxGeometry, 0xff9500, [0, 90, -80], [22, 0.5,0.5]);
-    makeInstance(boxGeometry, 0x3ab53e, [0, 80, -80], [22, 0.5,0.5]);
-    makeInstance(boxGeometry, 0xb81d28, [0, 70, -80], [22, 0.5,0.5]);
+    makeInstance(boxGeometry, 0xff9500, [0, 95, -80], [22, 0.5,0.5]);
+    makeInstance(boxGeometry, 0x3ab53e, [0, 85, -80], [22, 0.5,0.5]);
+    makeInstance(boxGeometry, 0xb81d28, [0, 75, -80], [22, 0.5,0.5]);
 
     const sign = new THREE.Mesh(boxGeometry, materials[2]); // the sign itself
     scene.add(sign); //adds shape to scene to be rendered
-    sign.position.set(0, 80, -78);
+    sign.position.set(0, 85, -78);
     sign.scale.set(3, 3, 0.5);
 
     //front wall
     const frontwall = new THREE.Mesh(boxGeometry, materials[3]); // the yellow wall
     scene.add(frontwall); //adds shape to scene to be rendered
-    frontwall.position.set(0, 30, -130);
+    frontwall.position.set(0, 35, -130);
     frontwall.scale.set(24, 7.5, 1);
 
-    makeInstance(boxGeometry, 0x222222, [80, 30, -120], [0.5, 7.5,0.25]);
-    makeInstance(boxGeometry, 0x222222, [40, 30, -120], [0.5, 7.5,0.25]);
-    makeInstance(boxGeometry, 0x222222, [-40, 30, -120], [0.5, 7.5,0.25]);
-    makeInstance(boxGeometry, 0x222222, [-80, 30, -120], [0.5, 7.5,0.25]);
-    makeInstance(boxGeometry, 0x222222, [0, 50, -120], [24, 0.5,0.25]);
-    makeInstance(boxGeometry, 0x222222, [0, 20, -120], [0.5, 6,0.25]);
+    makeInstance(boxGeometry, 0x222222, [80, 35, -120], [0.5, 7.5,0.25]);
+    makeInstance(boxGeometry, 0x222222, [40, 35, -120], [0.5, 7.5,0.25]);
+    makeInstance(boxGeometry, 0x222222, [-40, 35, -120], [0.5, 7.5,0.25]);
+    makeInstance(boxGeometry, 0x222222, [-80, 35, -120], [0.5, 7.5,0.25]);
+    makeInstance(boxGeometry, 0x222222, [0, 55, -120], [24, 0.5,0.25]);
+    makeInstance(boxGeometry, 0x222222, [0, 25, -120], [0.5, 6,0.25]);
+
+    // curb
+    makeInstance(boxGeometry, 0x555555, [0, -4, -160], [40, 1,25]);
+
+    // billboard
+
+    makeInstance(cylinderGeometry, 0x555555, [-250, 0, 125], [0.5, 15,0.5]); //base pole
+    //makeInstance(boxGeometry, 0xAAAAAA, [-245, 175, 125], [1, 5, 10]); // sign itself
+    
+    const billboard = new THREE.Mesh(boxGeometry, materials[2]); // the sign itself
+    scene.add(billboard); //adds shape to scene to be rendered
+    billboard.position.set(-245, 175, 125);
+    billboard.scale.set(1, 5, 10);
 
     // makes an untextured shape given all the parameters
 	function makeInstance( geometry, color, position, scale) {
