@@ -8,4 +8,5 @@ https://www.freepik.com/free-vector/relief-texture-design_853773.htm#query=aspha
 
 sky texture found here: https://polyhaven.com/a/aristea_wreck_puresky
 
-  
+Thank you to this video for the Hollow Purple Audio
+https://www.youtube.com/watch?v=dNwAW7P5PHs&ab_channel=ExtramLlamasx

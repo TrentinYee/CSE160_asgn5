@@ -5,7 +5,32 @@ import { OrbitControls} from 'three/addons/controls/OrbitControls.js'
 import {RectAreaLightUniformsLib} from 'three/addons/lights/RectAreaLightUniformsLib.js';
 import {RectAreaLightHelper} from 'three/addons/helpers/RectAreaLightHelper.js';
 
+// globals -----------------------------
+let g_purple;
+let g_urple = 0;
+let cam1_look = [-10, 10, 0];
+let cam1_pos = [-10, 10, 20];
+let g_time_gotten = 0;
+
+g_purple = document.getElementById('purple');
+
+/*function cam1_move(cam, direction, movement) { 
+    cam1_look[direction] += movement; 
+    cam1_pos[direction] += movement;
+}*/
+
+// main ------------------------
 function main() {
+
+    // Register function (event handler) to be called on a mouse press
+    document.getElementById('c').addEventListener('click', function(event) {
+        if (event.shiftKey) {
+            g_purple.play();
+            g_urple = 1;
+            g_time_gotten = 0;
+            console.log('e');
+        }
+    });
 
 	const canvas = document.querySelector( '#c' );
 	const renderer = new THREE.WebGLRenderer( { antialias: true, canvas } );
@@ -18,11 +43,13 @@ function main() {
 	
 	
     // camera1
+    
+
     const camera1 = new THREE.PerspectiveCamera( fov, aspect, near, far );
-    camera1.position.x = 5;
-    camera1.position.y = 10;
-    camera1.position.z = 42;
-    camera1.lookAt(0, 2, 0);
+    camera1.position.x = cam1_pos[0];
+    camera1.position.y = cam1_pos[1];
+    camera1.position.z = cam1_pos[2];
+    camera1.lookAt(cam1_look[0], cam1_look[1], cam1_look[2]);
 
     // camera2
     const camera2 = new THREE.PerspectiveCamera( fov, aspect, near, far);
@@ -47,26 +74,34 @@ function main() {
         scene.add(ambLight);
         
         // Directional Light
-		const color = 0xFFFFaa;
+        const color = 0xFFFFaa;
 		const intensity = 0.7;
-		const light = new THREE.DirectionalLight( color, intensity );
+		var light = new THREE.DirectionalLight( color, intensity );
 		light.position.set( 0, 10, 10 );
 		scene.add( light );
 
-        // Point Light 1
+        // Point Light 1, red
         const p1color = 0xff0000;
 		const p1intensity = 2000;
-		const p1light = new THREE.PointLight( p1color, p1intensity );
-		p1light.position.set( -30, 10, -25 );
-		scene.add( p1light );
+		var p1light = new THREE.PointLight( p1color, p1intensity );
+        var p1pos = [-35, 10, -25];
+		p1light.position.set( p1pos[0], p1pos[1], p1pos[2] );
 
-        // Point Light 2
+        // Point Light 2, blue
         const p2color = 0x0000ff;
 		const p2intensity = 2000;
-		const p2light = new THREE.PointLight( p2color, p2intensity );
-        p2light.d
-		p2light.position.set( 10, 10, -25 );
-		scene.add( p2light );
+		var p2light = new THREE.PointLight( p2color, p2intensity );
+        var p2pos = [15, 10, -25];
+		p2light.position.set( p2pos[0], p2pos[1], p2pos[2] );
+
+        // Point Light 3, purple
+        const p3color = 0xbb00ff;
+		const p3intensity = 2000;
+		var p3light = new THREE.PointLight( p3color, p3intensity );
+        var p3pos = [-10, 20, 30];
+		p3light.position.set( p3pos[0], p3pos[1], p3pos[2] );
+        //scene.add(p3light);
+		
 
         // Rectangular Light
         const reccolor = 0xFFFF00;
@@ -77,8 +112,8 @@ function main() {
         reclight.position.set(0, 30, -110);
         scene.add(reclight);
 
-        const helper = new THREE.PointLightHelper(p1light);
-        scene.add(helper);
+        //const helper = new THREE.PointLightHelper(p1light);
+        //scene.add(helper);
 
 	}
 
@@ -143,7 +178,7 @@ function main() {
     scene.add(foxbox); //adds shape to scene to be rendered
     foxbox.position.x = -10;
     foxbox.position.y = 7.5;
-    foxbox.position.z = 55;
+    foxbox.position.z = 150;
 
     // roadplate
     const road = new THREE.Mesh(boxGeometry, materials[1]);
@@ -241,6 +276,45 @@ function main() {
     billboard.position.set(-245, 175, 125);
     billboard.scale.set(1, 5, 10);
 
+
+    // colored balls--------------------------------
+    // blue 
+    const basicblue = new THREE.MeshBasicMaterial({  color: 0x0037ff  });
+
+	const blueball = new THREE.Mesh( ballGeometry, basicblue );
+
+	blueball.position.set(p2pos[0], p2pos[1], p2pos[2]);
+
+    // red
+    
+    const basicred = new THREE.MeshBasicMaterial({  color: 0xff1500  });
+
+	const redball = new THREE.Mesh( ballGeometry, basicred );
+
+	redball.position.set(p1pos[0], p1pos[1], p1pos[2]);
+
+    // purple 
+
+    const basicpurple = new THREE.MeshBasicMaterial({  color: 0x9900d1  });
+
+	const purpleball = new THREE.Mesh( ballGeometry, basicpurple );
+
+	purpleball.position.set(p3pos[0], p3pos[1], p3pos[2]);
+    purpleball.scale.set(2, 2, 2);
+
+    // explosion
+
+	const explosion = new THREE.Mesh( ballGeometry, basicpurple );
+
+	explosion.position.set(-10, 20, 4000);
+    explosion.scale.set(20, 50, 50);
+    var explosion_rad = 20;
+
+    //scene.add(purpleball);
+
+    // wall in the void -----------------------
+    makeBasicInstance(boxGeometry, 0xffffff, [0, -500, 0], [20, 10, 1]);
+
     // makes an untextured shape given all the parameters
 	function makeInstance( geometry, color, position, scale) {
 
@@ -255,7 +329,6 @@ function main() {
         shape.position.y = position[1];
         shape.position.z = position[2];
 
-        
 
 		return shape;
 
@@ -270,9 +343,7 @@ function main() {
 
         shape.scale.set(scale[0], scale[1], scale[2]);
 
-		shape.position.x = position[0];
-        shape.position.y = position[1];
-        shape.position.z = position[2];
+		shape.position.set(position[0], position[1], position[2]);
 
         
 
@@ -283,32 +354,151 @@ function main() {
     // contains all the shapes to be animated
 	const spinshapes = [
 		foxbox,
-		makeBasicInstance( ballGeometry, 0xff1500, [-30, 10, -25], [1, 1, 1]),
-		makeBasicInstance( ballGeometry, 0x0037ff, [10, 10, -25], [1, 1, 1]),
+		redball,
+		blueball,
+        purpleball,
 	];
 
-	function render( time ) {
+    let time_i;
+    let accel = 0;
 
-		time *= 0.001; // convert time to seconds
-
-        if (resizeRendererToDisplaySize(renderer)) {
-            const canvas = renderer.domElement;
-            camera2.aspect = canvas.clientWidth / canvas.clientHeight;
-            camera2.updateProjectionMatrix();
+    // urple animations ----------------
+    function urpletime(currenttime) {
+        // animaitons
+        if (currenttime > 2.75) { // blue spawn
+            scene.add( p2light );
+            scene.add( blueball );
         }
 
-		spinshapes.forEach( ( cube, ndx ) => {
+        if (currenttime > 5.5) { //red spawn
+            scene.add( p1light );
+            scene.add( redball );
+        }
 
-			const speed = 1 + ndx * .1;
-			const rot = time * speed;
-			cube.rotation.x = rot;
-			cube.rotation.y = rot;
+        if (currenttime > 7) { // sphere movement
+            redball.position.x += (currenttime - 7) * 0.01;
+            p1light.position.x += (currenttime - 7) * 0.01;
+            blueball.position.x -= (currenttime - 7) * 0.01;
+            p2light.position.x -= (currenttime - 7) * 0.01;
+            
 
-		} );
+        }
+        
+        if (currenttime > 12.5) { // purple transition
+            scene.remove(redball);
+            scene.remove(p1light);
+            scene.remove(blueball);
+            scene.remove(p2light);
+            
+            scene.add(purpleball);
+            scene.add(p3light);
 
-		renderer.render( scene, camera2 );
+            camera1.position.set(20, 10, -30);
+            camera1.lookAt(-10, 10, 30);
+        }
 
-		requestAnimationFrame( render );
+        if (currenttime > 16) { // purple move
+            purpleball.position.z += (currenttime-16)*(2+accel);
+            p3light.position.z += (currenttime-16)*(2+accel);
+            accel += 1;
+        }
+
+
+        if (currenttime > 16.25) { // foxdie protocol
+            scene.remove(foxbox);
+        }
+
+        if (currenttime > 19) { // explosion
+            scene.add(explosion);
+            explosion_rad += 2;
+            explosion.scale.set(explosion_rad, explosion_rad, explosion_rad);
+            light.color.set(0xff00ff);
+        }
+
+        if (currenttime > 20) { // fade to white
+            camera1.position.set(0, -500, -50);
+            camera1.lookAt(0, -500, 0);
+        }
+
+        if (currenttime > 25) { // reset
+            redball.position.set(p1pos[0], p1pos[1], p1pos[2]);
+            p1light.position.set(p1pos[0], p1pos[1], p1pos[2]);
+            blueball.position.set(p2pos[0], p2pos[1], p2pos[2]);
+            p2light.position.set(p2pos[0], p2pos[1], p2pos[2]);
+            purpleball.position.set(p3pos[0], p3pos[1], p3pos[2]);
+            p3light.position.set(p3pos[0], p3pos[1], p3pos[2]);
+            scene.remove(purpleball);
+            scene.remove(p3light);
+            scene.remove(explosion);
+            scene.add(foxbox);
+
+            light.color.set(0xffffaa);
+            explosion_rad = 20;
+
+            camera1.position.set(cam1_pos[0], cam1_pos[1], cam1_pos[2]);
+            camera1.lookAt(cam1_look[0], cam1_look[1], cam1_look[2]);
+            accel = 0;
+            g_time_gotten = 0;
+            g_urple = 0;
+        }
+    }
+
+    // render function -------------------------------------
+	function render( time ) {
+    
+		time *= 0.001; // convert time to seconds
+        
+        if (g_urple == 0) {
+            if (resizeRendererToDisplaySize(renderer)) {
+                const canvas = renderer.domElement;
+                camera2.aspect = canvas.clientWidth / canvas.clientHeight;
+                camera2.updateProjectionMatrix();
+            }
+    
+            spinshapes.forEach( ( cube, ndx ) => {
+    
+                const speed = 1 + ndx * .1;
+                const rot = time * speed;
+                cube.rotation.x = rot;
+                cube.rotation.y = rot;
+    
+            } );
+    
+            renderer.render( scene, camera2 );
+    
+            requestAnimationFrame( render );
+
+        } else {
+
+            if (g_time_gotten == 0) {
+                time_i = time;
+                g_time_gotten = 1;
+            }
+            //console.log(time_i);
+
+            urpletime(time-time_i);
+            
+
+            if (resizeRendererToDisplaySize(renderer)) {
+                const canvas = renderer.domElement;
+                camera1.aspect = canvas.clientWidth / canvas.clientHeight;
+                camera1.updateProjectionMatrix();
+            }
+    
+            spinshapes.forEach( ( cube, ndx ) => {
+    
+                const speed = 1 + ndx * .1;
+                const rot = time * speed;
+                cube.rotation.x = rot;
+                cube.rotation.y = rot;
+    
+            } );
+    
+            renderer.render( scene, camera1 );
+    
+            requestAnimationFrame( render );
+        }
+        
 
 	}
 
